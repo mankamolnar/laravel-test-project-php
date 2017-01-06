@@ -15,28 +15,26 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('hello/{name}', function ($name) {
-    echo "miafasz?".$name;
+Route::get('customer_name', function() {
+    $customer = App\Customer::where('name', '=', 'Tony')->first();
+    $customer = $customer->getAttributes();
+    echo "hali: ".$customer['name'];
 });
 
-Route::post('test', function(){
-    echo 'POSTED';
+Route::get('customer/{id}', function ($id){
+    $customer = App\Customer::find($id);
+    echo $customer->name;
+
+    echo "<ul>";
+    foreach ($customer->orders as $order) {
+        echo '<li>' . $order->name . '</li>';
+    }
+    echo "</ul>";
 });
 
-Route::get('test', function(){
-    echo '<form action="test" method="POST">
-            <input type="hidden" name="_token" value="'.csrf_token().'">
-            <input type="hidden" name="_method" value="PUT" />
-            <input type="submit" value="submit" />
-          </form>';
+Route::get('orders', function () {
+    $orders = App\Order::all();
+    foreach ($orders as $order) {
+        echo $order->name. "belongs to". $order->customer->name;
+    }
 });
-
-Route::put('test', function(){
-    echo 'PUT';
-});
-
-Route::delete('test', function(){
-    echo 'delete';
-});
-
-Route::get('test123', 'TestController@index');
